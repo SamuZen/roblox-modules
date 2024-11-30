@@ -12,4 +12,15 @@ function FusionHelper.ObserverCallback(scope, watching, callback)
     end)
 end
 
+function FusionHelper.ObserverCallbackWithPrevious(scope, watching, callback)
+    local observer = scope:Observer(watching)
+    local previous = Fusion.peek(watching)
+    callback(previous, previous)
+    return observer:onChange(function()
+        local now = Fusion.peek(watching)
+        callback(previous, now)
+        previous = now
+    end)
+end
+
 return FusionHelper
