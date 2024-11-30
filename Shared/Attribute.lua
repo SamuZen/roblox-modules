@@ -17,6 +17,13 @@ function Attribute.SyncFusionToAttribute(instance: Instance, attribute: string, 
     end)
 end
 
+function Attribute.SyncAttributeToFusion(instance: Instance, attribute: string, val, default)
+    val:set(instance:GetAttribute(attribute) or default)
+    instance:GetAttributeChangedSignal(attribute):Connect(function()
+        val:set(instance:GetAttribute(attribute) or default)
+    end)
+end
+
 function Attribute.Increment(instance: Instance, attribute: string, increment: number)
     local now = instance:GetAttribute(attribute)
     instance:SetAttribute(attribute, now + increment)
