@@ -17,10 +17,13 @@ function Attribute.SyncFusionToAttribute(instance: Instance, attribute: string, 
     end)
 end
 
-function Attribute.SyncAttributeToFusion(instance: Instance, attribute: string, val, default)
+function Attribute.SyncAttributeToFusion(instance: Instance, attribute: string, scope, val, default)
     val:set(instance:GetAttribute(attribute) or default)
-    instance:GetAttributeChangedSignal(attribute):Connect(function()
+    local connection = instance:GetAttributeChangedSignal(attribute):Connect(function()
         val:set(instance:GetAttribute(attribute) or default)
+    end)
+    table.insert(scope, function()
+        connection:Disconnect()
     end)
 end
 
