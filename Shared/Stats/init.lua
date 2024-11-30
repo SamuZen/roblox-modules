@@ -58,6 +58,10 @@ function Stats:get(id)
     return Fusion.peek(self.mFinal)[id]
 end
 
+function Stats:peek(id)
+    return Fusion.peek(Fusion.peek(self.mFinal)[id])
+end
+
 function Stats:getAll()
     return Fusion.peek(self.mFinal)
 end
