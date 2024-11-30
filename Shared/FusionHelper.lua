@@ -1,8 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Fusion = require(ReplicatedStorage.Source.Fusion)
-local Observer = Fusion.Observer
-
 
 local FusionHelper = {}
 
