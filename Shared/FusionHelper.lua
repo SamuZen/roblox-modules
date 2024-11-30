@@ -7,7 +7,7 @@ local Observer = Fusion.Observer
 local FusionHelper = {}
 
 function FusionHelper.ObserverCallback(scope, watching, callback)
-    local observer = Observer(scope, watching)
+    local observer = scope:Observer(watching)
     callback(Fusion.peek(watching))
     return observer:onChange(function()
         callback(Fusion.peek(watching))
