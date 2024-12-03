@@ -7,8 +7,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage.Source.Shared.Database.Constants)
-local loadModules = require(ReplicatedStorage.Source.Modules.Utility.LoadModules)
-local disconnectAndClear = require(ReplicatedStorage.Source.Modules.Utility.DisconnectAndClear)
+local loadModules = require(ReplicatedStorage.Source.Modules.Utility.loadModules)
+local disconnectAndClear = require(ReplicatedStorage.Source.Modules.Utility.disconnectAndClear)
 
 local Controller = {}
 Controller.__index = Controller
