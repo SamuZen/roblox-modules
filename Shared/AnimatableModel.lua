@@ -11,7 +11,8 @@ local Signal = require(ReplicatedStorage.Source.Packages.signal)
 -- ### Internal
 local existingModels = {}
 
-function AnimatableModel.new(model: Model)
+function AnimatableModel.new(model: Model, stopReplication: boolean)
+    stopReplication = stopReplication or false
     --print("New Animatable Model: ", model:GetFullName())
     if existingModels[model] ~= nil then
         warn("returning cached animatableModel")
@@ -47,11 +48,13 @@ function AnimatableModel.new(model: Model)
         animator.Parent = animationController
     end
 
-    animator.AnimationPlayed:Connect(function(animationTrack)
-        if animationTrack.Name == "Animation" then
-            animationTrack:Stop()
-        end
-    end)
+    if stopReplication then
+        animator.AnimationPlayed:Connect(function(animationTrack)
+            if animationTrack.Name == "Animation" then
+                animationTrack:Stop()
+            end
+        end)
+    end
 
     local self = setmetatable({
         trove = trove,
@@ -100,7 +103,7 @@ function AnimatableModel:Load(filesToLoad: {[string]: KeyframeSequence | Animati
 
     for name, file in filesToLoad do
 
-        if typeof(file) == 'string' or string.find(file, "rbxassetid://") then
+        if typeof(file) == 'string' and string.find(file, "rbxassetid://") then
             self:LoadAnimationId(name, file)
         elseif file:IsA("KeyframeSequence") then
             self:LoadKeyframeSequence(name, file)
