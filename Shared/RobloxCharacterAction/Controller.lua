@@ -59,12 +59,17 @@ function Controller:getAction(): string
 end
 
 function Controller:setAction(action: string)
+	local actionModule = self.actions[action]
 	local lastTimeAttribute = string.format(Constants.LAST_TIME_FORMAT_STRING, action)
-
 	self.character:SetAttribute(lastTimeAttribute, os.clock())
-	self.character:SetAttribute(Constants.ACTION_ATTRIBUTE, action)
+	
+	if actionModule == nil or not actionModule.dontSave or actionModule.dontSave == nil then
+		self.character:SetAttribute(Constants.ACTION_ATTRIBUTE, action)
+	end
 
-	self.setActionRemote:FireServer(action)
+	if actionModule == nil or not actionModule.dontReplicate or actionModule.dontReplicate == nil then
+		self.setActionRemote:FireServer(action)
+	end
 end
 
 function Controller:getTimeSinceAction(action: string): number
