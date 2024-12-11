@@ -149,10 +149,10 @@ end
 
 -- ###
 
-function AnimatableModel:StopAllAnimations()
+function AnimatableModel:StopAllAnimations(fadeTime)
     for index = #self.playingTracks, 1, -1 do
         local animation = self.playingTracks[index]
-        self.tracks[animation]:Stop()
+        self.tracks[animation]:Stop(fadeTime or 0.1)
         table.remove(self.playingTracks, index)
     end
 end
