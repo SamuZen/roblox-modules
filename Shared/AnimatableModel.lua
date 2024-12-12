@@ -211,18 +211,18 @@ function AnimatableModel:Freeze(duration: number, freezeSpeed: number)
     end)
 end
 
-function AnimatableModel:ConnectAnimationEvent(animationId: string, eventName: string, callback: (param: string) -> nil): RBXScriptConnection
+function AnimatableModel:ConnectAnimationEvent(animationId: string, eventName: string, callback: (param: string, animName: string) -> nil): RBXScriptConnection
     local animationTrack = self.tracks[animationId]
     if animationTrack == nil then return warn("Cannot connect event for animation that is not loaded: ", animationId) end
 
     local connection = animationTrack:GetMarkerReachedSignal(eventName):Connect(function(param)
-        callback(param)
+        callback(param, animationTrack.Name)
     end)
     self.trove:Add(connection)
     return connection
 end
 
-function AnimatableModel:ConnectAllAnimationsEvent(eventName: string, callback: (param: string) -> nil): typeof(Trove)
+function AnimatableModel:ConnectAllAnimationsEvent(eventName: string, callback: (param: string, animName: string) -> nil): typeof(Trove)
     local trove = Trove.new()
     for name, _ in self.tracks do
         trove:Add(self:ConnectAnimationEvent(name, eventName, callback))
