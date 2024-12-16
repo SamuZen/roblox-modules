@@ -3,6 +3,7 @@ export type Config = {
     maxPitch: number,
     maxValue: number,
     loop: boolean,
+    maxInterval: number,
 }
 
 export type ClassInstance = {
@@ -22,15 +23,35 @@ function PitchCalculator.new(config: Config)
     self.config = config
     self.pitchIncrement = pitchVariation / (config.maxValue - 1)
 
+    self.maxInterval = config.maxInterval
+    self.sequences = {}
+
     return self
 end
 
-function PitchCalculator:getPitch(value: number): number
-    local v = value
+function PitchCalculator:addToSequence(id: string)
+    if self.sequences[id] == nil then
+        self.sequences[id] = {
+            amount = 0,
+            t = 0,
+        }
+    end
+
+    local newT = os.clock()
+    if newT - self.sequences[id].t > self.maxInterval then
+        self.sequences[id].amount = 0
+    end
+
+    self.sequences[id].amount += 1
+    self.sequences[id].t = newT
+end
+
+function PitchCalculator:getPitch(id: string): number
+    local v = self.sequences[id].amount
 
     if self.config.loop then
         if v > self.config.maxValue then
-            local rest = value % self.config.maxValue
+            local rest = v % self.config.maxValue
             if rest ~= 0 then
                 v = rest
             end
@@ -38,7 +59,6 @@ function PitchCalculator:getPitch(value: number): number
     end
     
     if v > self.config.maxValue then
-        warn('max')
         return self.config.maxPitch
     end
 
