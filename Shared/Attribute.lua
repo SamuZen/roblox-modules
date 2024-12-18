@@ -32,4 +32,10 @@ function Attribute.Increment(instance: Instance, attribute: string, increment: n
     instance:SetAttribute(attribute, now + increment)
 end
 
+function Attribute.CloneAttribute(origin: Instance, target: Instance, attribute: string)
+    return Attribute.SyncFromAttribute(origin, attribute, function(value)
+        target:SetAttribute(attribute, value)
+    end)
+end
+
 return Attribute
