@@ -89,10 +89,15 @@ function AnimatableModel:OnAnimationLoaded(callback: (AnimationTrack) -> nil): R
     return connection
 end
 
-function AnimatableModel:_LoadAnimation(name, animation)
+function AnimatableModel:_LoadAnimation(name, animation, cleanAnimation)
+    if cleanAnimation == nil then
+        cleanAnimation = true
+    end
     local animationTrack : AnimationTrack = self.animator:LoadAnimation(animation)
     self.tracks[name] = animationTrack
-    self.trove:Add(animation)
+    if cleanAnimation then
+        self.trove:Add(animation)
+    end
     self.signalAnimationLoaded:Fire(animationTrack)
 end
 
@@ -108,7 +113,7 @@ function AnimatableModel:Load(filesToLoad: {[string]: KeyframeSequence | Animati
         elseif file:IsA("KeyframeSequence") then
             self:LoadKeyframeSequence(name, file)
         elseif file:IsA("Animation") then
-           self:LoadAnimation(name, file)
+           self:LoadAnimation(name, file, false)
         else
             error("Cannot load this type of file! ", filesToLoad)
         end
@@ -121,7 +126,7 @@ function AnimatableModel:LoadKeyframeSequence(name, keyframeSequence)
     self:LoadAnimationId(name, hashId)
 end
 
-function AnimatableModel:LoadAnimation(name, animation)
+function AnimatableModel:LoadAnimation(name, animation, ...)
     if typeof(name) == "number" then
         name = animation.AnimationId
     end
@@ -129,7 +134,7 @@ function AnimatableModel:LoadAnimation(name, animation)
         return
     end
     self.loadedAnimations[animation] = true
-    self:_LoadAnimation(name, animation)
+    self:_LoadAnimation(name, animation, ...)
 end
 
 function AnimatableModel:LoadAnimationId(name, id)
