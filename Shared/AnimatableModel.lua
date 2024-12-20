@@ -162,6 +162,16 @@ function AnimatableModel:StopAllAnimations(fadeTime)
     end
 end
 
+function AnimatableModel:StopAllAnimationsExept(list)
+    for index = #self.playingTracks, 1, -1 do
+        local animation = self.playingTracks[index]
+        if not list[animation] then
+            self.tracks[animation]:Stop()
+            table.remove(self.playingTracks, index)
+        end
+    end
+end
+
 function AnimatableModel:StopAnimations(list)
     for index = #self.playingTracks, 1, -1 do
         local animation = self.playingTracks[index]
