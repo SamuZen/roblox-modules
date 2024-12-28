@@ -18,6 +18,7 @@ end
 local DEFAULT_PART_COLOR = Color3.fromRGB(163,162,165)
 
 local ShortProperty = {
+    Name = 'n',
     Size = 'si',
     Color = 'co',
     CFrame = 'cf',
@@ -39,6 +40,7 @@ local ShortProperty = {
 }
 
 local LongProperty = {
+    n = 'Name',
     cs = 'CastShadow',
     st = 'Style',
 
@@ -59,6 +61,7 @@ local LongProperty = {
 }
 
 local PropertyToSerial = {
+    Name = {'string'},
     CastShadow = {'boolean'},
     Style = {'enum', Enum.Style},
 
@@ -129,10 +132,23 @@ Serialization.serialize.boolean = function(bool, ignore)
     end
 end
 
+Serialization.serialize.string = function(data, ignore)
+    if ignore ~= nil and ignore == data then return nil end
+    return data
+end
 -- Instances
+
+Serialization.serialize.model = function(part: Part)
+    return {
+        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Model'),
+        [ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
+    }
+end
 
 Serialization.serialize.part = function(part: Part)
     return {
+        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Part'),
+
         [ShortProperty.Color] = Serialization.serialize.color(part.Color, DEFAULT_PART_COLOR),
         [ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
         [ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
@@ -153,6 +169,7 @@ end
 
 Serialization.serialize.trusspart = function(part: TrussPart)
     return {
+        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Truss'),
         [ShortProperty.Color] = Serialization.serialize.color(part.Color, DEFAULT_PART_COLOR),
         [ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
         [ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
@@ -173,6 +190,7 @@ end
 
 Serialization.serialize.cornerwedgepart = function(part: CornerWedgePart)
     return {
+        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'CornerWedge'),
         [ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
         [ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
         [ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
@@ -186,6 +204,7 @@ end
 
 Serialization.serialize.wedgepart = function(part: WedgePart)
     return {
+        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Wedge'),
         [ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
         [ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
         [ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
@@ -196,6 +215,32 @@ Serialization.serialize.wedgepart = function(part: WedgePart)
         [ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
     }
 end
+
+function Serialization.serializeInstance(instance: Instance): { [string]: any }
+    -- Obter a função de serialização específica
+    local serializeFunction = Serialization.getSerializationFunction(instance)
+    if not serializeFunction then
+        warn(`No serialization function found for ClassName {instance.ClassName}`)
+        return nil
+    end
+
+    -- Serializar a instância atual
+    local serializedData = serializeFunction(instance)
+    serializedData.className = instance.ClassName
+
+    -- Serializar recursivamente os filhos
+    serializedData.children = {}
+    for _, child in ipairs(instance:GetChildren()) do
+        local childData = Serialization.serializeInstance(child)
+        if childData then
+            table.insert(serializedData.children, childData)
+        end
+    end
+
+    return serializedData
+end
+
+
 
 -- Tabela de deserialização
 
@@ -227,7 +272,31 @@ Serialization.deserialize.boolean = function(data)
     end
 end
 
+Serialization.deserialize.string = function(data)
+    return data
+end
+
 -- instances
+
+Serialization.deserialize.model = function(data)
+    local part = Instance.new("Model")
+
+    for key, value in data do
+        local property = LongProperty[key]
+        if property == nil then continue end
+        local serialData = PropertyToSerial[property]
+
+        local result = Serialization.deserialize[serialData[1]](value, serialData[2])
+
+        if key == ShortProperty.CFrame then
+            part:PivotTo(result)
+        else
+            part[property] = result
+        end
+    end
+
+    return part
+end
 
 Serialization.deserialize.part = function(data)
     local part = Instance.new("Part")
@@ -243,7 +312,7 @@ Serialization.deserialize.part = function(data)
 
         local result = Serialization.deserialize[serialData[1]](value, serialData[2])
 
-        if key == 'CFrame' then
+        if key == ShortProperty.CFrame then
             part:PivotTo(result)
         else
             part[property] = result
@@ -264,7 +333,7 @@ Serialization.deserialize.trusspart = function(data)
 
         local result = Serialization.deserialize[serialData[1]](value, serialData[2])
 
-        if key == 'CFrame' then
+        if key == ShortProperty.CFrame then
             part:PivotTo(result)
         else
             part[property] = result
@@ -334,12 +403,29 @@ Serialization.deserialize.vehicleseat = function(data)
     return part
 end
 
+function Serialization.deserializeInstance(data: { [string]: any }): Instance
+    -- Obter a função de deserialização específica
+    local deserializeFunction = Serialization.getDeserializationFunction(data.className)
+    if not deserializeFunction then
+        warn(`No deserialization function found for ClassName {data.className}`)
+        return nil
+    end
 
+    -- Recriar a instância atual
+    local instance = deserializeFunction(data)
 
+    -- Recriar recursivamente os filhos e anexá-los
+    if data.children then
+        for _, childData in ipairs(data.children) do
+            local childInstance = Serialization.deserializeInstance(childData)
+            if childInstance then
+                childInstance.Parent = instance
+            end
+        end
+    end
 
-
-
-
+    return instance
+end
 
 -- Funções utilitárias para JSON
 Serialization.jsonEncode = function(tbl: {any}): string
@@ -350,10 +436,6 @@ Serialization.jsonDecode = function(jsonString: string): {any}
     return HttpService:JSONDecode(jsonString)
 end
 
-
-
-
-
 function Serialization.getSerializationFunction(instance: Instance)
     local className = instance.ClassName
     local serializationFuncion = Serialization.serialize[string.lower(className)]
@@ -362,26 +444,6 @@ end
 
 function Serialization.getDeserializationFunction(className: string)
     return Serialization.deserialize[string.lower(className)]
-end
-
---- ### OLD
-
-local function decimals(value, decimals)
-    local v = 10 * decimals
-    return math.round(value * v) / v
-end
-
-local function decimalsCeil(value, decimals)
-    local v = 10 * decimals
-    return math.ceil(value * v) / v
-end
-
-function Serialization.tableToJsonString(table: {any}): string
-    return HttpService:JSONEncode(table)
-end
-
-function Serialization.jsonStringToTable(jsonString: string): {any}
-    return HttpService:JSONDecode(jsonString)
 end
 
 return Serialization
