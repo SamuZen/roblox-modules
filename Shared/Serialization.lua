@@ -17,7 +17,7 @@ end
 --
 local DEFAULT_PART_COLOR = Color3.fromRGB(163,162,165)
 
-local ShortProperty = {
+Serialization.ShortProperty = {
     Name = 'n',
     Size = 'si',
     Color = 'co',
@@ -39,7 +39,7 @@ local ShortProperty = {
 
 }
 
-local LongProperty = {
+Serialization.LongProperty = {
     n = 'Name',
     cs = 'CastShadow',
     st = 'Style',
@@ -60,7 +60,7 @@ local LongProperty = {
     cc = 'CanCollide',
 }
 
-local PropertyToSerial = {
+Serialization.PropertyToSerial = {
     Name = {'string'},
     CastShadow = {'boolean'},
     Style = {'enum', Enum.Style},
@@ -140,79 +140,79 @@ end
 
 Serialization.serialize.model = function(part: Part)
     return {
-        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Model'),
-        [ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
+        [Serialization.ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Model'),
+        [Serialization.ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
     }
 end
 
 Serialization.serialize.part = function(part: Part)
     return {
-        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Part'),
+        [Serialization.ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Part'),
 
-        [ShortProperty.Color] = Serialization.serialize.color(part.Color, DEFAULT_PART_COLOR),
-        [ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
-        [ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
-        [ShortProperty.Shape] = Serialization.serialize.enum(part.Shape, Enum.PartType.Block),
-        [ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
-        [ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
-        [ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
-        [ShortProperty.CastShadow] = Serialization.serialize.boolean(part.CastShadow, true),
+        [Serialization.ShortProperty.Color] = Serialization.serialize.color(part.Color, DEFAULT_PART_COLOR),
+        [Serialization.ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
+        [Serialization.ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
+        [Serialization.ShortProperty.Shape] = Serialization.serialize.enum(part.Shape, Enum.PartType.Block),
+        [Serialization.ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
+        [Serialization.ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
+        [Serialization.ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
+        [Serialization.ShortProperty.CastShadow] = Serialization.serialize.boolean(part.CastShadow, true),
 
-        [ShortProperty.TopSurface] = Serialization.serialize.enum(part.TopSurface, Enum.SurfaceType.Smooth),
-        [ShortProperty.BottomSurface] = Serialization.serialize.enum(part.BottomSurface, Enum.SurfaceType.Smooth),
-        [ShortProperty.RightSurface] = Serialization.serialize.enum(part.RightSurface, Enum.SurfaceType.Smooth),
-        [ShortProperty.LeftSurface] = Serialization.serialize.enum(part.LeftSurface, Enum.SurfaceType.Smooth),
-        [ShortProperty.FrontSurface] = Serialization.serialize.enum(part.FrontSurface, Enum.SurfaceType.Smooth),
-        [ShortProperty.BackSurface] = Serialization.serialize.enum(part.BackSurface, Enum.SurfaceType.Smooth),
+        [Serialization.ShortProperty.TopSurface] = Serialization.serialize.enum(part.TopSurface, Enum.SurfaceType.Smooth),
+        [Serialization.ShortProperty.BottomSurface] = Serialization.serialize.enum(part.BottomSurface, Enum.SurfaceType.Smooth),
+        [Serialization.ShortProperty.RightSurface] = Serialization.serialize.enum(part.RightSurface, Enum.SurfaceType.Smooth),
+        [Serialization.ShortProperty.LeftSurface] = Serialization.serialize.enum(part.LeftSurface, Enum.SurfaceType.Smooth),
+        [Serialization.ShortProperty.FrontSurface] = Serialization.serialize.enum(part.FrontSurface, Enum.SurfaceType.Smooth),
+        [Serialization.ShortProperty.BackSurface] = Serialization.serialize.enum(part.BackSurface, Enum.SurfaceType.Smooth),
     }
 end
 
 Serialization.serialize.trusspart = function(part: TrussPart)
     return {
-        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Truss'),
-        [ShortProperty.Color] = Serialization.serialize.color(part.Color, DEFAULT_PART_COLOR),
-        [ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
-        [ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
-        [ShortProperty.Style] = Serialization.serialize.enum(part.Style, Enum.Style.AlternatingSupports),
-        [ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
-        [ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
-        [ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
-        [ShortProperty.CastShadow] = Serialization.serialize.boolean(part.CastShadow, true),
+        [Serialization.ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Truss'),
+        [Serialization.ShortProperty.Color] = Serialization.serialize.color(part.Color, DEFAULT_PART_COLOR),
+        [Serialization.ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
+        [Serialization.ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
+        [Serialization.ShortProperty.Style] = Serialization.serialize.enum(part.Style, Enum.Style.AlternatingSupports),
+        [Serialization.ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
+        [Serialization.ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
+        [Serialization.ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
+        [Serialization.ShortProperty.CastShadow] = Serialization.serialize.boolean(part.CastShadow, true),
 
-        [ShortProperty.TopSurface] = Serialization.serialize.enum(part.TopSurface, Enum.SurfaceType.Smooth),
-        [ShortProperty.BottomSurface] = Serialization.serialize.enum(part.BottomSurface, Enum.SurfaceType.Smooth),
-        [ShortProperty.RightSurface] = Serialization.serialize.enum(part.RightSurface, Enum.SurfaceType.Universal),
-        [ShortProperty.LeftSurface] = Serialization.serialize.enum(part.LeftSurface, Enum.SurfaceType.Universal),
-        [ShortProperty.FrontSurface] = Serialization.serialize.enum(part.FrontSurface, Enum.SurfaceType.Universal),
-        [ShortProperty.BackSurface] = Serialization.serialize.enum(part.BackSurface, Enum.SurfaceType.Universal),
+        [Serialization.ShortProperty.TopSurface] = Serialization.serialize.enum(part.TopSurface, Enum.SurfaceType.Smooth),
+        [Serialization.ShortProperty.BottomSurface] = Serialization.serialize.enum(part.BottomSurface, Enum.SurfaceType.Smooth),
+        [Serialization.ShortProperty.RightSurface] = Serialization.serialize.enum(part.RightSurface, Enum.SurfaceType.Universal),
+        [Serialization.ShortProperty.LeftSurface] = Serialization.serialize.enum(part.LeftSurface, Enum.SurfaceType.Universal),
+        [Serialization.ShortProperty.FrontSurface] = Serialization.serialize.enum(part.FrontSurface, Enum.SurfaceType.Universal),
+        [Serialization.ShortProperty.BackSurface] = Serialization.serialize.enum(part.BackSurface, Enum.SurfaceType.Universal),
     }
 end
 
 Serialization.serialize.cornerwedgepart = function(part: CornerWedgePart)
     return {
-        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'CornerWedge'),
-        [ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
-        [ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
-        [ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
-        [ShortProperty.CastShadow] = Serialization.serialize.boolean(part.CastShadow, true),
+        [Serialization.ShortProperty.Name] = Serialization.serialize.string(part.Name, 'CornerWedge'),
+        [Serialization.ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
+        [Serialization.ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
+        [Serialization.ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
+        [Serialization.ShortProperty.CastShadow] = Serialization.serialize.boolean(part.CastShadow, true),
 
-        [ShortProperty.Color] = Serialization.serialize.color(part.Color),
-        [ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
-        [ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
+        [Serialization.ShortProperty.Color] = Serialization.serialize.color(part.Color),
+        [Serialization.ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
+        [Serialization.ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
     }
 end
 
 Serialization.serialize.wedgepart = function(part: WedgePart)
     return {
-        [ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Wedge'),
-        [ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
-        [ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
-        [ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
-        [ShortProperty.CastShadow] = Serialization.serialize.boolean(part.CastShadow, true),
+        [Serialization.ShortProperty.Name] = Serialization.serialize.string(part.Name, 'Wedge'),
+        [Serialization.ShortProperty.Material] = Serialization.serialize.enum(part.Material, Enum.Material.Plastic),
+        [Serialization.ShortProperty.Anchored] = Serialization.serialize.boolean(part.Anchored, true),
+        [Serialization.ShortProperty.CanCollide] = Serialization.serialize.boolean(part.CanCollide, true),
+        [Serialization.ShortProperty.CastShadow] = Serialization.serialize.boolean(part.CastShadow, true),
         
-        [ShortProperty.Color] = Serialization.serialize.color(part.Color),
-        [ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
-        [ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
+        [Serialization.ShortProperty.Color] = Serialization.serialize.color(part.Color),
+        [Serialization.ShortProperty.Size] = Serialization.serialize.vector3(part.Size),
+        [Serialization.ShortProperty.CFrame] = Serialization.serialize.cframe(part:GetPivot()),
     }
 end
 
@@ -282,13 +282,13 @@ Serialization.deserialize.model = function(data)
     local part = Instance.new("Model")
 
     for key, value in data do
-        local property = LongProperty[key]
+        local property = Serialization.LongProperty[key]
         if property == nil then continue end
-        local serialData = PropertyToSerial[property]
+        local serialData = Serialization.PropertyToSerial[property]
 
         local result = Serialization.deserialize[serialData[1]](value, serialData[2])
 
-        if key == ShortProperty.CFrame then
+        if key == Serialization.ShortProperty.CFrame then
             part:PivotTo(result)
         else
             part[property] = result
@@ -306,13 +306,13 @@ Serialization.deserialize.part = function(data)
     part.BottomSurface = Enum.SurfaceType.Smooth
 
     for key, value in data do
-        local property = LongProperty[key]
+        local property = Serialization.LongProperty[key]
         if property == nil then continue end
-        local serialData = PropertyToSerial[property]
+        local serialData = Serialization.PropertyToSerial[property]
 
         local result = Serialization.deserialize[serialData[1]](value, serialData[2])
 
-        if key == ShortProperty.CFrame then
+        if key == Serialization.ShortProperty.CFrame then
             part:PivotTo(result)
         else
             part[property] = result
@@ -327,13 +327,13 @@ Serialization.deserialize.trusspart = function(data)
     part.Anchored = true
 
     for key, value in data do
-        local property = LongProperty[key]
+        local property = Serialization.LongProperty[key]
         if property == nil then continue end
-        local serialData = PropertyToSerial[property]
+        local serialData = Serialization.PropertyToSerial[property]
 
         local result = Serialization.deserialize[serialData[1]](value, serialData[2])
 
-        if key == ShortProperty.CFrame then
+        if key == Serialization.ShortProperty.CFrame then
             part:PivotTo(result)
         else
             part[property] = result
@@ -348,9 +348,9 @@ Serialization.deserialize.cornerwedgepart = function(data)
     part.Anchored = true
 
     for key, value in data do
-        local property = LongProperty[key]
+        local property = Serialization.LongProperty[key]
         if property == nil then continue end
-        local serialData = PropertyToSerial[property]
+        local serialData = Serialization.PropertyToSerial[property]
 
         local result = Serialization.deserialize[serialData[1]](value, serialData[2])
 
@@ -369,9 +369,9 @@ Serialization.deserialize.wedgepart = function(data)
     part.Anchored = true
 
     for key, value in data do
-        local property = LongProperty[key]
+        local property = Serialization.LongProperty[key]
         if property == nil then continue end
-        local serialData = PropertyToSerial[property]
+        local serialData = Serialization.PropertyToSerial[property]
 
         local result = Serialization.deserialize[serialData[1]](value, serialData[2])
 
