@@ -1,4 +1,6 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local FusionHelper = require(script.Parent.FusionHelper)
+local Serialization = require(ReplicatedStorage.Source.Modules.Serialization)
 
 local Attribute = {}
 
@@ -25,6 +27,14 @@ function Attribute.SyncAttributeToFusion(instance: Instance, attribute: string, 
     table.insert(scope, function()
         connection:Disconnect()
     end)
+end
+
+function Attribute.SetStringArray(instance: Instance, attribute: string, value: table)
+    instance:SetAttribute(attribute, Serialization.serializeStringArray(value))
+end
+
+function Attribute.GetStringArray(instance: Instance, attribute)
+    return Serialization.deserializeStringArray(instance:GetAttribute(attribute))
 end
 
 function Attribute.Increment(instance: Instance, attribute: string, increment: number)

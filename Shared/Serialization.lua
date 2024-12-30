@@ -446,4 +446,28 @@ function Serialization.getDeserializationFunction(className: string)
     return Serialization.deserialize[string.lower(className)]
 end
 
+
+local TABLE_ARRAY_SEPARATOR = ","
+
+function Serialization.serializeStringArray(tbl, separator)
+    if separator == nil then
+        separator = TABLE_ARRAY_SEPARATOR
+    end
+    separator = separator or ","
+    local str = ""
+    for _, v in ipairs(tbl) do
+        str = str .. tostring(v) .. separator
+    end
+    return str:sub(1, -2) -- Remove o último separador
+end
+
+function Serialization.deserializeStringArray(str, separator)
+    separator = separator or ","
+    local result = {}
+    for value in string.gmatch(str, "([^" .. separator .. "]+)") do
+        table.insert(result, value)
+    end
+    return result
+end
+
 return Serialization
