@@ -6,7 +6,7 @@ local TweenService = game:GetService("TweenService")
 local Fusion = require(ReplicatedStorage.Source.Fusion)
 
 -- ### Var
-local info = TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+local info = TweenInfo.new(2.5, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
 local DamageNumbers = {}
 
@@ -47,21 +47,18 @@ function DamageNumbers.createNumber(position: Vector3, damage: number, color: Co
 	part.CastShadow = false
 	part.Transparency = 1
 	part.Anchored = false
-
-	local rand = math.random(-1, 1)
-	local randomOffset = Vector3.new(math.random(-range, range), math.random(-range, range), math.random(-range, range))
-	local cframe = CFrame.new(position + offset + randomOffset)
-	part:PivotTo(cframe)
+	part:PivotTo(CFrame.new(position))
 	part.Anchored = true
 	part.Parent = workspace
 
 	local billboard = createBillboard(tostring(math.ceil(damage)), color, sizeMultiplier)
+    billboard.AlwaysOnTop = true
+	billboard.StudsOffset = Vector3.new(math.random(-2, 2), math.random(0, 2), 0)
 	billboard.Parent = part
 	billboard.Adornee = part
-    billboard.AlwaysOnTop = true
 
-	local tween = TweenService:Create(part, info, {
-		CFrame = cframe * CFrame.new(0 + rand, 2 + rand, 0 + rand)
+	local tween = TweenService:Create(billboard, info, {
+		StudsOffset = billboard.StudsOffset + Vector3.new(0, 6, 0)
 	})
 	tween:Play()
 	tween:Destroy()
@@ -70,7 +67,7 @@ function DamageNumbers.createNumber(position: Vector3, damage: number, color: Co
 	--local randUpwardsForce = Vector3.new(math.random(-10, 10), math.random(30, 35), math.random(-10, 10));
 	--part:ApplyImpulse(randUpwardsForce * part.AssemblyMass)
 
-	task.delay(1, function()
+	task.delay(2.5, function()
 		part:Destroy()
 	end)
 end
