@@ -7,23 +7,23 @@ WaypointGroup.ORDER = {
     RANDOM = 2,
 }
 
-function WaypointGroup.new(elementsFolder, getOrder)
+function WaypointGroup.new(data:{CFrame}, getOrder)
     local self = setmetatable({}, WaypointGroup)
-    self.points = {}
+    self.points = data
     self.index = 1
     self.getOrder = getOrder or WaypointGroup.ORDER.ORDERED
-    self.amountOfPoints = #elementsFolder:GetChildren()
-
-    for i = 1, self.amountOfPoints do
-        table.insert(self.points, elementsFolder[tostring(i)]:GetPivot())
-    end
-
+    self.amountOfPoints = #data
     return self
 end
 
-function WaypointGroup:GetNextPoint()
+function WaypointGroup:GetNextIndex()
     self:Advance()
     return self:GetIndex()
+end
+
+function WaypointGroup:GetNextData()
+    self:Advance()
+    return self:GetCurrent()
 end
 
 function WaypointGroup:Advance()
@@ -49,6 +49,15 @@ end
 
 function WaypointGroup:GetCurrent()
     return self.points[self.index]
+end
+
+function WaypointGroup.GetPointsFromFolderOfParts(folder)
+    local points = {}
+    local parts = folder:GetChildren()
+    for i = 1, #parts, 1 do
+        table.insert(points, folder[i]:GetPivot())
+    end
+    return points
 end
 
 return WaypointGroup
