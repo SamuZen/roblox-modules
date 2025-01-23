@@ -11,6 +11,19 @@ function Raycast.GetInstanceDownRaycast(instance: Instance, position: Vector3, r
 	return workspace:Raycast(position, Vector3.new(0,-100,0), params)
 end
 
+function Raycast.GetInstanceLookVectorRaycast(instance: Instance, data: {
+	distance: number,
+	collisionGroup: string?,
+})
+	local params = RaycastParams.new()
+	params.FilterDescendantsInstances = {instance}
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.CollisionGroup = data.collisionGroup-- or "Default"
+	--params.RespectCanCollide = respectCanCollide or true
+	local result = workspace:Raycast(instance:GetPivot().Position, instance:GetPivot().LookVector * data.distance, params)
+	return result
+end
+
 function Raycast.penetrateCast(ray: Ray, ignoreList: {[number]: Instance}): {
     hitPart: BasePart,
     hitPoint: Vector3,
