@@ -42,6 +42,12 @@ function Assets.GetRandomNameOnPath(path: string)
     return list[math.random(1, #list)]
 end
 
+function Assets.GetRandomOnPath(path: string)
+    local list = Assets.ListAssetsOnPath(path)
+    local name = list[math.random(1, #list)]
+    return Assets.WaitForPath(`{path}.{name}`)
+end
+
 function Assets.WaitForPath(path: string): Folder
     local split = string.split(path, ".")
     local rootFolder = Assets.GetFolder(split[1])
