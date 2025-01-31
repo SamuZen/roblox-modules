@@ -7,6 +7,8 @@ local SyncController = require(ReplicatedStorage.Source.Shared.Client.Controller
 local ActionSync = {}
 
 function ActionSync.new(scope, interval: number, delay: number, callback: (cycle: number) -> nil)
+    delay = delay or 0
+    interval = interval or 5
     local scope = scope or Fusion.scoped(Fusion)
 
     local currentCycle = scope:Computed(function(use, scope)

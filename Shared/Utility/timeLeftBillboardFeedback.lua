@@ -5,6 +5,7 @@ return function(scope, timeLeftValue, parent, adornee)
         Adornee = adornee,
         Parent = parent,
         StudsOffset = Vector3.new(0, 4, 0),
+        AlwaysOnTop = true,
         [scope.Children] = {
             scope:New "TextLabel" {
                 Text = scope:Computed(function(use, scope)
