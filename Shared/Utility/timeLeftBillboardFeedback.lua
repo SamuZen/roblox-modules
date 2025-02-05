@@ -1,9 +1,11 @@
 return function(scope, timeLeftValue, parent, adornee)
     -- debug
+    local showTimer = workspace:GetAttribute("ShowTimer")
     scope:New "BillboardGui" {
         Size = UDim2.fromScale(4, 2),
         Adornee = adornee,
         Parent = parent,
+        Enabled = showTimer,
         StudsOffset = Vector3.new(0, 4, 0),
         AlwaysOnTop = true,
         [scope.Children] = {
