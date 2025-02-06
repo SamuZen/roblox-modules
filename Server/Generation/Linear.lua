@@ -4,8 +4,8 @@ local Linear = {}
 local function create(prefab: Instance)
     local level = prefab:Clone()
 
-    local start = level:FindFirstChild("Start", true) :: BasePart
-    local finish = level:FindFirstChild("Finish", true) :: BasePart
+    local start = level.Setup.Start :: BasePart
+    local finish = level.Setup.Finish :: BasePart
 
     start.Transparency = 1
     finish.Transparency = 1
