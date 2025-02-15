@@ -12,6 +12,13 @@ local function create(prefab: Instance)
     start.CanCollide = false
     finish.CanCollide = false
 
+    if level:IsA("Folder") then
+		local model = Instance.new("Model")
+		model.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
+		level.Parent = model
+		level = model
+	end
+
     level.PrimaryPart = start
     
     return {
