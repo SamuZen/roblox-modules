@@ -24,11 +24,7 @@ end
 
 --[[ Função para extrair os meta-dados de uma pasta ]]
 local function extractMetadata(folder)
-    local metadata = {}
-    for _, attributeName in ipairs(folder:GetAttributes()) do
-        metadata[attributeName] = folder:GetAttribute(attributeName)
-    end
-    return metadata
+    return folder:GetAttributes()
 end
 
 local function buildBehaviourTree(parentFolder)
