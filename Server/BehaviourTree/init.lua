@@ -198,16 +198,20 @@ function BehaviourTree:select(args)
 	for k, v in ipairs(self.children) do
 		
 		local result = BehaviourTree:wrap(v:run(args))
-		if debug then print(`{v.name or "?"}: {result}`) end
-
+		
+		--print(`SELECTOR: Executando {v.name}, Resultado: {result}`)
+		
 		if result == BehaviourTree.RESULTS.SUCCESS then
+			--print(`✅ {v.name} retornou SUCCESS, encerrando SELECTOR.`)
 			return BehaviourTree.RESULTS.SUCCESS
 		end
 		if result == BehaviourTree.RESULTS.RUNNING then
+			--print(`⏳ {v.name} retornou RUNNING, SELECTOR aguardando.`)
 			return BehaviourTree.RESULTS.RUNNING
 		end
 	end
-	if debug then warn(`select: {self.name or ""} FAILED`) end
+	
+	--print(`❌ Nenhum child retornou SUCCESS ou RUNNING, SELECTOR falhou.`)
 	return BehaviourTree.RESULTS.FAIL
 end
 
