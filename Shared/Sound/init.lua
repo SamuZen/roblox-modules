@@ -24,12 +24,19 @@ function Sound.PlayLocalSound(soundId: string, pitch: number)
         error("PlayLocalSound can only be called from the client")
     end
     task.spawn(function()
-        local sound = Sound.CreateSound(soundId)
+        local sound = soundId
+        if typeof(soundId) == "string" then
+            sound = Sound.CreateSound(soundId)
+        end
 
         if pitch ~= nil then
             local pitchFx = Instance.new("PitchShiftSoundEffect")
-            pitchFx.Parent = sound
+            local atts = sound:GetAttributes()
+            if atts.pMin ~= nil and atts.pMax ~= nil then
+                pitch = atts.pMin + (pitch * (atts.pMax - atts.pMin))
+            end
             pitchFx.Octave = pitch
+            pitchFx.Parent = sound
         end
 
         SoundService:PlayLocalSound(sound)
@@ -40,7 +47,7 @@ function Sound.PlayLocalSound(soundId: string, pitch: number)
     end)
 end
 
-function Sound.PlayWorldSound(soundId: string, position: Vector3, pitch: number)
+function Sound.PlayWorldSound(soundId: string | Sound, position: Vector3, pitch: number)
     task.spawn(function()
         local part = Part.create({
             Parent = workspace,
@@ -52,12 +59,19 @@ function Sound.PlayWorldSound(soundId: string, position: Vector3, pitch: number)
         })
         part:PivotTo(CFrame.new(position))
         
-        local sound = Sound.CreateSound(soundId)
+        local sound = soundId
+        if typeof(soundId) == "string" then
+            sound = Sound.CreateSound(soundId)
+        end
 
         if pitch ~= nil then
             local pitchFx = Instance.new("PitchShiftSoundEffect")
-            pitchFx.Parent = sound
+            local atts = sound:GetAttributes()
+            if atts.pMin ~= nil and atts.pMax ~= nil then
+                pitch = atts.pMin + (pitch * (atts.pMax - atts.pMin))
+            end
             pitchFx.Octave = pitch
+            pitchFx.Parent = sound
         end
 
         sound.Parent = part
