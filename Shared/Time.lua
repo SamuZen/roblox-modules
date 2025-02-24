@@ -32,4 +32,58 @@ function Time.onIntervalPassed(interval: number, duration: number, callback:(ela
     return connection
 end
 
+function Time.createTimerDisplay(duration: number, position: Vector3)
+
+    local cleanupFunction
+
+    local p = Instance.new("Part")
+    p.CanQuery = false
+    p.CanTouch = false
+    p.CanCollide = false
+    p.Transparency = 1
+    p.Anchored = true
+    p.CFrame = CFrame.new(position)
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Parent = p
+    billboard.Size = UDim2.fromScale(8, 3)
+
+    billboard.MaxDistance = 50
+    
+    local text = Instance.new("TextLabel")
+    text.BackgroundTransparency = 1
+    text.Size = UDim2.fromScale(1, 1)
+    text.TextScaled = true
+    text.Parent = billboard
+    text.TextColor3 = Color3.new(1, 1, 1)
+    text.Font = Enum.Font.FredokaOne
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Thickness = 2
+    stroke.Color = Color3.new(0, 0, 0)
+    stroke.Parent = text
+
+    local connection = Time.onIntervalPassed(0.1, duration, function(elapsed)
+        local timeLeft = (duration - elapsed) + 1
+        local minutes = math.floor(timeLeft / 60)
+        local seconds = timeLeft % 60
+        text.Text = string.format("%02d:%02d", minutes, seconds)
+        if timeLeft <= 1 then
+            cleanupFunction()
+        end
+    end)
+
+    p.Parent = workspace
+
+    cleanupFunction = function ()
+        print("CLEANUP")
+        connection:Disconnect()
+        text:Destroy()
+        billboard:Destroy()
+        p:Destroy()
+    end
+
+    return cleanupFunction
+end
+
 return Time
