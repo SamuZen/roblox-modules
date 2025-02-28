@@ -56,8 +56,8 @@ function Character.weldModel(character: Model, model: Model, attachAt: string, o
 
 	local selectedPart = character:FindFirstChild(attachAt) or character:WaitForChild(attachAt, 5)
 
-	local weld = Weld(selectedPart, model.PrimaryPart)
-	model:PivotTo(selectedPart.CFrame * (offset or CFrame.new()))
+	local weld = Weld(model.PrimaryPart, selectedPart)
+	model:PivotTo(selectedPart.CFrame * (offset or CFrame.new(0,0,0)))
 	model.Parent = character
     return weld
 end
