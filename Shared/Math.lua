@@ -9,4 +9,9 @@ Math.Variate = function(v, p)
     return v * (1 + variation)
 end
 
+Math.FloorDecimal = function(v, num)
+    local r = 10 ^ num
+    return math.floor(v * r) / r
+end
+
 return Math
