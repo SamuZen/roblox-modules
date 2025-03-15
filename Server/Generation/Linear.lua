@@ -15,7 +15,9 @@ function Linear.create(prefab: Instance)
     if level:IsA("Folder") then
 		local model = Instance.new("Model")
 		model.ModelStreamingMode = Enum.ModelStreamingMode.Atomic
-		level.Parent = model
+        for _, c in level:GetChildren() do
+            c.Parent = model
+        end
 		level = model
 	end
 
