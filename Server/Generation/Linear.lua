@@ -1,7 +1,7 @@
 
 local Linear = {}
 
-local function create(prefab: Instance)
+function Linear.create(prefab: Instance)
     local level = prefab:Clone()
 
     local start = level.Setup.Start :: BasePart
@@ -32,7 +32,7 @@ function Linear.assemble(assembleData, rootCFrame: CFrame, parent: Instance)
     local currentCFrame = rootCFrame
 
     local function createRegion(data, index, cframe: CFrame)
-        local levelInfo = create(data.prefab)
+        local levelInfo = Linear.create(data.prefab)
         levelInfo.model:PivotTo(cframe)
         levelInfo.model.Parent = parent
         levelInfo.model.Name = `{index}-{data.prefab.Name}`
