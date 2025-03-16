@@ -42,8 +42,8 @@ function ZoneManager.new(trigger, timer, callback)
     FusionHelper.ObserverCallback(scope, countDown, function(value)
         if value <= 0 then
             local _players = Fusion.peek(players)
-            callback(_players)
             countDown:set(timer)
+            callback(_players)
             for _, player in _players do
                 removePlayer(player)
             end
