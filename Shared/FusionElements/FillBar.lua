@@ -21,6 +21,10 @@ local function FillBar(
     }
 )
 
+    if props.Percentage ~= nil then
+        props.CurrentValue = props.Percentage
+        props.MaxValue = 1
+    end
     local value = props.CurrentValue or scope:Value(60)
     local maxValue = props.MaxValue or scope:Value(80)
     local fillSize = scope:Computed(function(use, scope)
