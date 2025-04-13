@@ -37,6 +37,30 @@ function Assets.ListAssetsOnPath(path: string)
     end)
 end
 
+function Assets.ListAssetsOnPathRecursive(path: string)
+	local instance = Assets.WaitForPath(path)
+
+	local function collectChildrenRecursive(parent, prefix)
+		local result = {}
+		for _, child in ipairs(parent:GetChildren()) do
+			if child:IsA("Folder") then
+				-- Recursivamente percorre a pasta com prefixo atualizado
+				local subPrefix = prefix .. child.Name .. "."
+				local subResults = collectChildrenRecursive(child, subPrefix)
+				for _, v in ipairs(subResults) do
+					table.insert(result, v)
+				end
+			else
+				-- Adiciona o nome completo: prefixo + nome do item
+				table.insert(result, prefix .. child.Name)
+			end
+		end
+		return result
+	end
+
+	return collectChildrenRecursive(instance, "")
+end
+
 function Assets.GetRandomNameOnPath(path: string)
     local list = Assets.ListAssetsOnPath(path)
     return list[math.random(1, #list)]
@@ -46,6 +70,12 @@ function Assets.GetRandomOnPath(path: string)
     local list = Assets.ListAssetsOnPath(path)
     local name = list[math.random(1, #list)]
     return Assets.WaitForPath(`{path}.{name}`)
+end
+
+function Assets.GetRandomOnPathRecursive(path: string)
+	local list = Assets.ListAssetsOnPathRecursive(path)
+	local name = list[math.random(1, #list)]
+	return Assets.WaitForPath(`{path}.{name}`)
 end
 
 function Assets.WaitForPath(path: string): Folder
