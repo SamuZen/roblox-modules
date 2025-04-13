@@ -1,8 +1,17 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local ServerStorage = game:GetService("ServerStorage")
+
 local Fusion = require(ReplicatedStorage.Source.Fusion)
 
 -- ### Controllers
-local SyncController = require(ReplicatedStorage.Source.Shared.Client.Controllers.TimeSyncController)
+local SyncController
+
+if RunService:IsClient() then
+    SyncController = require(ReplicatedStorage.Source.Shared.Client.Controllers.TimeSyncController)
+else
+    SyncController = require(ServerStorage.Source.Shared.Server.Services.TimeSyncService)
+end
 
 local ActionSync = {}
 
