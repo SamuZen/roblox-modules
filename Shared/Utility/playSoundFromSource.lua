@@ -14,6 +14,8 @@ local function playSoundFromSource(soundTemplate: Sound, source: Instance, pitch
 	sound.Ended:Once(function()
 		sound:Destroy()
 	end)
+
+	return sound
 end
 
 return playSoundFromSource
