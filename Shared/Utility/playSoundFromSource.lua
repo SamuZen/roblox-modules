@@ -3,10 +3,16 @@
 	destroying it once it has finished playing.
 --]]
 
+local Player = game:GetService("Players")
+
 local function playSoundFromSource(soundTemplate: Sound, source: Instance, pitchAdjustment: number?)
 	local sound = soundTemplate:Clone()
 	if pitchAdjustment then
 		sound.PlaybackSpeed *= pitchAdjustment
+	end
+
+	if source == nil then
+		source = Player.LocalPlayer:WaitForChild("PlayerGui")
 	end
 	sound.Parent = source
 
