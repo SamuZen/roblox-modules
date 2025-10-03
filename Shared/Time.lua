@@ -3,6 +3,14 @@ local RunService = game:GetService("RunService")
 
 local Time = {}
 
+function Time.getCurrentTime(): number
+    return os.time(os.date("!*t"))
+end
+
+function Time.getCurrentDecimalTime(): number
+    return os.time(os.date("!*t")) + (os.clock() % 1)
+end
+
 function Time.onTimePassed(time: number, callback:() -> nil): RBXScriptConnection
     local connection
     connection = RunService.Heartbeat:Connect(function()
