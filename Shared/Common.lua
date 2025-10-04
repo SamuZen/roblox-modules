@@ -5,6 +5,7 @@ local Debris = game:GetService("Debris")
 
 -- ### Modules
 local Time = require(script.Parent.Time)
+local Player = require(script.Parent.Player)
 
 local Common = {
     isStudio = RunService:IsStudio(),
@@ -15,6 +16,7 @@ local Common = {
 }
 
 Common.getCurrentDecimalTime = Time.getCurrentTime
+Common.getRandomPlayer = Player.getRandomPlayer
 
 function printDatastore(...)
     if Common.printDatastoreEnabled then
