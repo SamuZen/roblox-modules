@@ -78,6 +78,22 @@ function Assets.GetRandomOnPathRecursive(path: string)
 	return Assets.WaitForPath(`{path}.{name}`)
 end
 
+function Assets.Exists(path: string)
+    local split = string.split(path, ".")
+    local rootFolder = Assets.GetFolder(split[1])
+    if #split == 1 and rootFolder then return true end
+
+    local parent = rootFolder
+    local instance = nil
+    for i = 2, #split do
+        instance = parent:FindFirstChild(split[i])
+        if instance == nil then return false end
+        parent = instance
+    end
+
+    return true
+end
+
 function Assets.WaitForPath(path: string): Folder
     local split = string.split(path, ".")
     local rootFolder = Assets.GetFolder(split[1])
