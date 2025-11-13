@@ -25,12 +25,18 @@ function Sound.PlayLocalSound(soundId: string, pitch: number)
     end
     task.spawn(function()
         local sound = soundId
+        local groupSound = false
         if typeof(soundId) == "string" then
             sound = Sound.CreateSound(soundId)
+        else
+            if sound:IsDescendantOf(game.SoundService) then
+                groupSound = true
+            end
         end
 
+        local pitchFx = nil
         if pitch ~= nil then
-            local pitchFx = Instance.new("PitchShiftSoundEffect")
+            pitchFx = sound:FindFirstChild("PitchShiftSoundEffect") or Instance.new("PitchShiftSoundEffect")
             local atts = sound:GetAttributes()
             if atts.pMin ~= nil and atts.pMax ~= nil then
                 pitch = atts.pMin + (pitch * (atts.pMax - atts.pMin))
@@ -41,9 +47,15 @@ function Sound.PlayLocalSound(soundId: string, pitch: number)
 
         SoundService:PlayLocalSound(sound)
 
-        sound.Ended:Once(function()
-            sound:Destroy()
-        end)
+        if pitchFx ~= nil then
+            pitchFx.Octave = pitch
+        end
+
+        if not groupSound then
+            sound.Ended:Once(function()
+                sound:Destroy()
+            end)
+        end
     end)
 end
 
