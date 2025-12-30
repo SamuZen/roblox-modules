@@ -98,6 +98,9 @@ function AnimatableModel:_LoadAnimation(name, animation, cleanAnimation)
     if cleanAnimation then
         self.trove:Add(animation)
     end
+    animationTrack.Priority = Enum.AnimationPriority.Action4
+    animationTrack.Looped = false
+
     self.signalAnimationLoaded:Fire(animationTrack)
 end
 
@@ -207,6 +210,10 @@ end
 function AnimatableModel:IsPlaying()
 	self:ClearPlayingList()
 	return #self.playingTracks > 0
+end
+
+function AnimatableModel:IsPlayingAnimation(animationId: string)
+    return table.find(self.playingTracks, animationId) ~= nil
 end
 
 function AnimatableModel:Freeze(duration: number, freezeSpeed: number)
