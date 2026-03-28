@@ -11,7 +11,7 @@ function Folder.create(attributes: FolderAttributes): Folder
     for key, value in attributes do
         instance[key] = value
     end
-    warn(attributes)
+    --warn(attributes)
     return instance
 end
 
