@@ -185,13 +185,16 @@ function AnimatableModel:StopAnimations(list)
     end
 end
 
-function AnimatableModel:PlayAnimation(animationId: string, fadeTime: number, weight: number, speed: number)
+function AnimatableModel:PlayAnimation(animationId: string, fadeTime: number, weight: number, speed: number, looped: boolean?)
     local animationTrack = self.tracks[animationId]
     if animationTrack == nil then
         warn(self.model:GetFullName())
         return warn("Cannot play animation that is not loaded! ", animationId)
     end
 
+    if looped ~= nil then
+        animationTrack.Looped = looped
+    end
     self.tracks[animationId]:Play(fadeTime, weight, speed)
     table.insert(self.playingTracks, animationId)
 end
