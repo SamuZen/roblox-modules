@@ -94,15 +94,19 @@ function Assets.Exists(path: string)
     return true
 end
 
-function Assets.WaitForPath(path: string): Folder
+function Assets.WaitForPath(path: string, timeout: number?): Folder
     local split = string.split(path, ".")
     local rootFolder = Assets.GetFolder(split[1])
     if #split == 1 then return rootFolder end
 
+    local waitTimeout = timeout or 5
     local parent = rootFolder
     local instance = nil
     for i = 2, #split do
-        instance = parent:WaitForChild(split[i])
+        instance = parent:WaitForChild(split[i], waitTimeout)
+        if instance == nil then
+            return nil
+        end
         parent = instance
     end
 
