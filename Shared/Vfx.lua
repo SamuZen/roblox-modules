@@ -1,12 +1,21 @@
 -- ### Roblox Modules
 local Debris = game:GetService("Debris")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 -- ### Modules
 local Part = require(script.Parent.Part)
 local Folder = require(script.Parent.Folder)
 local Assets = require(script.Parent.Assets)
 local Weld = require(script.Parent.Weld)
+
+local event : RemoteEvent
+if RunService:IsServer() then
+	event = Instance.new("RemoteEvent")
+	event.Parent = script
+else
+	event = script:WaitForChild("RemoteEvent")
+end
 
 local vfxFolder = Folder.getOrCreate({
     Parent = workspace,
@@ -95,7 +104,18 @@ function Vfx.Emit(instance: Instance, attributes)
     end
 end
 
-function Vfx.EmitAt(cframe:CFrame, instance: Instance, attributes, weldOn)
+function Vfx.EmitAt(cframe:CFrame, instance: Instance, attributes, weldOn, toClient)
+	if toClient ~= nil and RunService:IsServer() then
+		local weldOnRef = nil
+		if weldOn ~= nil then
+			if typeof(weldOn) == "Instance" then
+				weldOnRef = weldOn:GetFullName()
+			end
+		end
+		event:FireClient(toClient, cframe, instance, attributes, weldOnRef)
+		return
+	end
+	
     task.spawn(function()
         attributes = attributes or {}
         if attributes.delay ~= nil then
@@ -127,6 +147,21 @@ function Vfx.EmitAt(cframe:CFrame, instance: Instance, attributes, weldOn)
             Weld(weldOn, origin)
         end
     end)
+end
+
+if RunService:IsClient() then
+	event.OnClientEvent:Connect(function(cframe, instance, attributes, weldOnRef)
+		local weldOn = nil
+		if weldOnRef ~= nil then
+			local success, result = pcall(function()
+				return game:FindFirstChild(weldOnRef, true)
+			end)
+			if success then
+				weldOn = result
+			end
+		end
+		Vfx.EmitAt(cframe, instance, attributes, weldOn)
+	end)
 end
 
 return Vfx
