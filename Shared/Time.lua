@@ -94,4 +94,13 @@ function Time.createTimerDisplay(duration: number, position: Vector3)
     return cleanupFunction
 end
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Fusion = require(ReplicatedStorage.Source.Fusion)
+
+local mainScope = Fusion.scoped(Fusion)
+Time.serverTime = mainScope:Value(0)
+Time.onIntervalPassed(1, nil, function()
+    Time.serverTime:set(workspace:GetServerTimeNow())
+end)
+
 return Time
