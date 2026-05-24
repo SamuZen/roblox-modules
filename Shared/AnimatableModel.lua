@@ -15,7 +15,7 @@ function AnimatableModel.new(model: Model, stopReplication: boolean)
     stopReplication = stopReplication or false
     --print("New Animatable Model: ", model:GetFullName())
     if existingModels[model] ~= nil then
-        warn("returning cached animatableModel")
+        --warn("returning cached animatableModel")
         return existingModels[model]
     end
 
@@ -188,7 +188,7 @@ end
 function AnimatableModel:PlayAnimation(animationId: string, fadeTime: number, weight: number, speed: number, looped: boolean?)
     local animationTrack = self.tracks[animationId]
     if animationTrack == nil then
-        warn(self.model:GetFullName())
+        --warn(self.model:GetFullName())
         return warn("Cannot play animation that is not loaded! ", animationId)
     end
 
