@@ -6,7 +6,7 @@ World.__index = World
 
 function World.new(options)
     assert(options.Parent and options.Definitions and options.Tag)
-    return setmetatable({Options=options, Records={}, ByPart={}, Time=0, Serial=0}, World)
+    return setmetatable({Options=options, Records={}, ByPart={}, Time=if options.Clock then options.Clock() else 0, Serial=0}, World)
 end
 
 function World:Spawn(kind, groundFrame, context)
@@ -69,7 +69,7 @@ function World:Damage(record, amount, source)
 end
 
 function World:Step(dt)
-    self.Time += dt
+    self.Time = if self.Options.Clock then self.Options.Clock() else self.Time+dt
     for _,record in self.Records do
         if not record.Part:IsDescendantOf(workspace) then self:Remove(record, "Removed"); continue end
         local interval = math.max(.03, record.Definition.MoveInterval or .1)
@@ -77,9 +77,9 @@ function World:Step(dt)
         local elapsed = math.min(.25, self.Time-(record.LastMove or self.Time-interval))
         record.LastMove, record.NextMove = self.Time, self.Time+interval
         if self.Options.Move then
-            local frame = self.Options.Move(record, elapsed, self.Time)
+            local frame, state = self.Options.Move(record, elapsed, self.Time)
             local moving=frame~=nil and (frame.Position-record.Frame.Position).Magnitude>.001
-            local state=if moving then "Moving" else "Idle"
+            state=state or (if moving then "Moving" else "Idle")
             if record.Part:GetAttribute("CreatureState")~=state then record.Part:SetAttribute("CreatureState",state) end
             if frame and frame~=record.Frame then
                 record.Frame = frame

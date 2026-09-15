@@ -13,6 +13,11 @@ function Presentation.new(options)
     table.insert(self.Connections, Collection:GetInstanceRemovedSignal(options.Tag):Connect(function(part) self:Remove(part) end))
     for _,part in Collection:GetTagged(options.Tag) do add(part) end
     table.insert(self.Connections, Run.PreRender:Connect(function(dt) self:Step(dt) end))
+    if options.Animate then
+        table.insert(self.Connections,Run.PreSimulation:Connect(function(dt)
+            for _,record in self.Records do options.Animate(record,dt) end
+        end))
+    end
     return self
 end
 
@@ -34,7 +39,7 @@ function Presentation:Add(part)
     root.Parent = self.Folder
     local record = {Marker=part, Root=root, From=part.CFrame, To=part.CFrame, Elapsed=0, Connections={}}
     self.Records[part] = record
-    local ok, visual = pcall(self.Options.CreateVisual, root, part)
+    local ok, visual = pcall(self.Options.CreateVisual, root, part, record)
     if not ok then self:Remove(part); warn("[Creatures] "..tostring(visual)); return end
     record.Visual = visual
     if self.Options.LocalTag then Collection:AddTag(root, self.Options.LocalTag) end
@@ -72,6 +77,7 @@ function Presentation:Step(dt)
         record.Elapsed += dt
         local interval = math.clamp(part:GetAttribute("MoveInterval") or .1, .03, 1)
         record.Root.CFrame = record.From:Lerp(record.To, math.min(1, record.Elapsed/interval))
+        if self.Options.Render then self.Options.Render(record,dt) end
     end
 end
 
