@@ -5,7 +5,7 @@ ClipRig.__index=ClipRig
 function ClipRig.new(root,data,origin)
     local model=Instance.new("Model")
     model.Name,model.Parent="Visual",root
-    local self=setmetatable({Model=model,Data=data,Parts={},Motors={},Clip=nil,Blend=1,Previous={}},ClipRig)
+    local self=setmetatable({Model=model,Root=root,Origin=origin,Data=data,Parts={},Motors={},Clip=nil,Blend=1,Previous={}},ClipRig)
     for _,entry in data.Parts do
         local part=Instance.new(entry.Class)
         part.Name,part.Size=entry.Name,entry.Size
@@ -15,6 +15,7 @@ function ClipRig.new(root,data,origin)
         part.CFrame=root.CFrame*origin*entry.Frame
         part.Parent=model
         self.Parts[entry.Name]=part
+        if entry.Name=="RigRoot" then self.BaseFrame=entry.Frame end
     end
     model.PrimaryPart=assert(self.Parts.RigRoot)
     local anchor=Instance.new("WeldConstraint")
@@ -51,6 +52,16 @@ function ClipRig:Sample(name,time,dt,key)
         local pose=from.Frame:Lerp(to.Frame,eased)
         motor.Transform=(self.Previous[part] or CFrame.identity):Lerp(pose,self.Blend)
     end
+end
+function ClipRig:WorldFrame(name)
+    if name=="RigRoot" then return self.Root.CFrame*self.Origin*self.BaseFrame end
+    local motor=assert(self.Motors[name],"Part must be driven by a motor")
+    return self:WorldFrame(motor.Part0.Name)*motor.C0*motor.Transform*motor.C1:Inverse()
+end
+function ClipRig:OffsetPartWorld(name,offset)
+    local motor=assert(self.Motors[name])
+    local joint=self:WorldFrame(motor.Part0.Name)*motor.C0
+    motor.Transform+=joint:VectorToObjectSpace(offset)
 end
 function ClipRig:Destroy() self.Model:Destroy() end
 return ClipRig
