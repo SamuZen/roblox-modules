@@ -58,9 +58,13 @@ function World:Damage(record, amount, source)
     if not record or self.Records[record.Id]~=record or not record.Alive then return nil, "InactiveCreature" end
     if type(amount)~="number" or amount~=amount or amount<=0 or amount==math.huge then return nil, "InvalidDamage" end
     if self.Options.CanDamage and not self.Options.CanDamage(record, source) then return nil, "CreaturePermission" end
+    if record.Brain and record.Brain.State=="Return" then return nil, "CreatureReturning" end
     record.Health = math.max(0, record.Health-amount)
     record.Part:SetAttribute("Health", record.Health)
-    if record.Health>0 then return nil end
+    if record.Health>0 then
+        if self.Options.Damaged then self.Options.Damaged(record,source) end
+        return nil
+    end
     -- Retire synchronously, before any game callback can yield or award twice.
     local defeat = {Id=record.Id, Kind=record.Kind, Position=record.Frame.Position, Context=record.Context}
     self:Remove(record, "Killed")
