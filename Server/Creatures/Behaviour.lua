@@ -140,7 +140,8 @@ function Behaviour.Step(record,dt,now,ops)
                 local frame=face(position,targetPosition,record.Frame)
                 brain.Action={Sequence=brain.Sequence,Start=now,Frame=frame,Resolved=false}
                 if config.Attack.Lunge then
-                    brain.Action.LungeRemaining=math.min(config.Attack.Lunge.Distance,math.max(0,offset.Magnitude-config.Attack.Range*.75))
+                    local landingRange=config.Attack.Range*(config.Attack.Lunge.LandingRangeScale or .75)
+                    brain.Action.LungeRemaining=math.min(config.Attack.Lunge.Distance,math.max(0,offset.Magnitude-landingRange))
                 end
                 state(brain,"Windup",now)
                 ops.Action(record,brain.Action)
