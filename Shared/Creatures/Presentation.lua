@@ -33,7 +33,7 @@ function Presentation:Add(part)
     root.Size = part.Size
     root.Anchored, root.CanCollide, root.CanTouch, root.CanQuery = true, false, false, false
     root.Transparency, root.CastShadow, root.CFrame = 1, false, part.CFrame
-    for _,name in {"CreatureId", "CreatureType", "Health", "MaxHealth", "ExpeditionId", "OwnerUserId"} do
+    for _,name in {"CreatureId", "CreatureType", "Health", "MaxHealth", "Level", "ExpeditionId", "OwnerUserId"} do
         root:SetAttribute(name, part:GetAttribute(name))
     end
     root.Parent = self.Folder
@@ -43,9 +43,11 @@ function Presentation:Add(part)
     if not ok then self:Remove(part); warn("[Creatures] "..tostring(visual)); return end
     record.Visual = visual
     if self.Options.LocalTag then Collection:AddTag(root, self.Options.LocalTag) end
-    table.insert(record.Connections, part:GetAttributeChangedSignal("Health"):Connect(function()
-        root:SetAttribute("Health", part:GetAttribute("Health"))
-    end))
+    for _,name in {"Health","MaxHealth","Level"} do
+        table.insert(record.Connections, part:GetAttributeChangedSignal(name):Connect(function()
+            root:SetAttribute(name, part:GetAttribute(name))
+        end))
+    end
     table.insert(record.Connections, part.AncestryChanged:Connect(function()
         if not part:IsDescendantOf(workspace) then self:Remove(part) end
     end))
