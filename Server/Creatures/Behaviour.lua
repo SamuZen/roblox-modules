@@ -193,8 +193,9 @@ function Behaviour.Step(record,dt,now,ops)
         end
         local selected,attackId=config.Attack,"Basic"
         local special=config.Special
-        -- At melee distance, always preserve basic pressure, even while its cooldown runs.
-        if special and not basicInRange and offset.Magnitude>=(special.MinRange or basicRange)
+        -- Ranged specials can fill a basic cooldown; approach specials keep melee priority.
+        local specialOpportunity=not basicInRange or (special and special.DuringBasicCooldown and now<brain.NextAttack)
+        if special and specialOpportunity and offset.Magnitude>=(special.MinRange or basicRange)
             and (special.Approach or offset.Magnitude<=(special.TriggerRange or special.Range)) and now>=(brain.NextSpecial or 0) then
             selected,attackId=special,"Special"
         end
