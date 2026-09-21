@@ -38,6 +38,7 @@ function Coordinator:Remove(record)
     record.Encounter=nil
     record.CombatReadyAt=nil
     record.CombatPosition=nil
+    record.Navigation=nil
 end
 function Coordinator:Contains(position)
     return not self.Options.Contains or self.Options.Contains(position)

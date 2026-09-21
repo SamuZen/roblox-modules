@@ -31,7 +31,7 @@ function Positioning.Refresh(index,records,now)
     end
     index.Previous=previous
 end
-function Positioning.Delta(index,record,target,targetPosition,dt,serial)
+function Positioning.Delta(index,record,target,targetPosition,dt,serial,intent)
     local config=record.Definition.Behaviour
     local position=record.Frame.Position
     local offset=flat(position-targetPosition)
@@ -68,6 +68,7 @@ function Positioning.Delta(index,record,target,targetPosition,dt,serial)
     -- Keep pursuit speed until arrival. A distance-proportional slowdown outside
     -- trigger range creates a permanent following gap behind a retreating target.
     local seek=if distance>preferred+.2 then -offset.Unit*math.min((distance-preferred)/math.max(dt,.001),speed) else Vector3.zero
+    if intent then seek=limited(intent/math.max(dt,.001),speed) end
     local forward=if seek.Magnitude>.001 then seek.Unit else Vector3.zero
     local right=Vector3.new(-forward.Z,0,forward.X)
     local blocker,urgency=nil,0
