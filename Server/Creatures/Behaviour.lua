@@ -76,6 +76,11 @@ function Behaviour.Step(record,dt,now,ops)
         local age=now-action.Start
         local movedFrame
         local charge=attack.Charge
+        if attack.AreaTrackTime and not action.AreaCommitted and targetPosition then
+            -- Never revise a landing point after the visual stone has left the hand.
+            if age<=attack.AreaTrackTime and ops.AimArea then ops.AimArea(record,action,targetPosition,now) end
+            if age>=attack.AreaTrackTime then action.AreaCommitted=true end
+        end
         if charge and charge.TrackDuringWindup and not action.ChargeStarted and targetPosition then
             -- Include the launch tick, then commit both heading and travel distance.
             aimCharge(action,position,targetPosition)
