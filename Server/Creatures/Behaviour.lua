@@ -108,6 +108,24 @@ function Behaviour.Step(record,dt,now,ops)
         end
         local lunge=attack.Lunge
         if lunge and not action.LungeBlocked and age<attack.Windup then
+            if lunge.TrackDuringWindup and not action.LungeStarted and targetPosition then
+                -- Predict where the target will be at impact; commit before leaving the ground.
+                local lead=Vector3.zero
+                local sampleTime=now-(action.LungeTargetTime or now)
+                if action.LungeTargetPosition and sampleTime>.001 then
+                    local velocity=flat(targetPosition-action.LungeTargetPosition)/sampleTime
+                    lead=velocity*math.max(0,attack.Windup-age)
+                    local limit=lunge.LeadDistance or 0
+                    if lead.Magnitude>limit then lead=lead.Unit*limit end
+                end
+                local destination=targetPosition+lead
+                action.Frame=face(position,destination,action.Frame)
+                local landingRange=attack.Range*(lunge.LandingRangeScale or .75)
+                action.LungeRemaining=math.min(lunge.Distance,math.max(0,flat(destination-position).Magnitude-landingRange))
+                action.LungeTargetPosition,action.LungeTargetTime=targetPosition,now
+                movedFrame=action.Frame
+            end
+            if age>=lunge.Delay then action.LungeStarted=true end
             -- Only consume this tick's overlap: never teleport to catch up after a stall.
             local elapsed=math.max(0,math.min(age,lunge.Delay+lunge.Duration)-math.max(age-dt,lunge.Delay))
             local distance=math.min(action.LungeRemaining,elapsed*lunge.Distance/lunge.Duration)
@@ -185,6 +203,7 @@ function Behaviour.Step(record,dt,now,ops)
                 local frame=face(position,targetPosition,record.Frame)
                 brain.Action={Sequence=brain.Sequence,Start=now,Frame=frame,Resolved=false,AttackId=attackId,Attack=selected}
                 if selected.Lunge then
+                    brain.Action.LungeTargetPosition,brain.Action.LungeTargetTime=targetPosition,now
                     local landingRange=selected.Range*(selected.Lunge.LandingRangeScale or .75)
                     brain.Action.LungeRemaining=math.min(selected.Lunge.Distance,math.max(0,offset.Magnitude-landingRange))
                 end

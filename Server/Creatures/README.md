@@ -14,6 +14,8 @@
 
 Actions capture `AttackId` (`Basic` / `Special`) and `Attack` at start. Consumers must resolve damage, aiming and presentation from that action, not always from the species' basic. Only one action runs at a time. `NextAttack` and `NextSpecial` track independent cooldowns, starting after the corresponding recovery; special cooldown does not block melee pressure.
 
+`Lunge.TrackDuringWindup=true` updates heading and travel until `Lunge.Delay`, including the departure tick. Horizontal target velocity sampled during preparation predicts the position at the hit time (`Attack.Windup`), with prediction displacement capped by `Lunge.LeadDistance` (default zero). `LandingRangeScale` controls the remaining gap and `Lunge.Distance` still caps travel. Heading and travel lock at departure; there is no airborne homing or increase to damage range. Facing is replicated through the returned frame without starting another action or replaying effects.
+
 `Charge.StopDistance` optionally caps travel to the target distance minus this value, bounded by speed times active duration. `Charge.TrackDuringWindup=true` recalculates heading and travel throughout preparation, including the launch tick, then locks both for the entire dash. Without this flag, the initial aim remains fixed. `ChargeRemaining` drives movement and the announced endpoint. `ops.Action` is called again during aim updates with the same sequence/start; adapters must refresh presentation without resetting per-action state or replaying effects. Reaching the endpoint or hitting an obstacle starts recovery immediately; direction never homes after launch. Navigation, contact checks and cancellation remain injected server responsibilities.
 
 
