@@ -187,14 +187,18 @@ function Behaviour.Step(record,dt,now,ops)
         else brain.LostAt=nil end
         local offset=flat(targetPosition-position)
         local basicRange=config.Attack.TriggerRange or config.Attack.Range
+        local basicInRange=offset.Magnitude<=basicRange
+        if not basicInRange and encounter and ops.BasicReachable then
+            basicInRange=ops.BasicReachable(record,brain.Target,targetPosition)
+        end
         local selected,attackId=config.Attack,"Basic"
         local special=config.Special
         -- At melee distance, always preserve basic pressure, even while its cooldown runs.
-        if special and offset.Magnitude>basicRange and offset.Magnitude>=(special.MinRange or basicRange)
+        if special and not basicInRange and offset.Magnitude>=(special.MinRange or basicRange)
             and (special.Approach or offset.Magnitude<=(special.TriggerRange or special.Range)) and now>=(brain.NextSpecial or 0) then
             selected,attackId=special,"Special"
         end
-        local inRange=attackId=="Special" or offset.Magnitude<=(selected.TriggerRange or selected.Range)
+        local inRange=attackId=="Special" or basicInRange
         if inRange and ops.Visible(record,brain.Target) then
             brain.LastProgress=now
             state(brain,"Idle",now)
