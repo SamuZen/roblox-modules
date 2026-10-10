@@ -23,6 +23,7 @@ end
 
 function Presentation:Add(part)
     if self.Records[part] or not part:IsA("BasePart") or not part:IsDescendantOf(workspace) then return end
+    if self.Options.Filter and not self.Options.Filter(part) then self.Pending[part]=true;return end
     if not part:GetAttribute("CreatureId") or not part:GetAttribute("CreatureType") or not part:GetAttribute("Health") then
         self.Pending[part]=true
         return
@@ -69,6 +70,9 @@ function Presentation:Step(dt)
     end
     for part,record in self.Records do
         if not part:IsDescendantOf(workspace) then self:Remove(part); continue end
+        if self.Options.Filter and not self.Options.Filter(part) then
+            self:Remove(part);self.Pending[part]=true;continue
+        end
         local frame = part.CFrame
         if frame ~= record.To then
             record.From, record.To, record.Elapsed = record.Root.CFrame, frame, 0
