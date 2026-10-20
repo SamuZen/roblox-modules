@@ -39,6 +39,9 @@ local function sameSpawn(a, b)
     return a and a.Kind == b.Kind and a.Level == b.Level and a.Scope == b.Scope
         and a.OwnerUserId == b.OwnerUserId and a.Frame == b.Frame
         and a.QuestId == b.QuestId and a.QuestSpawnId == b.QuestSpawnId
+        and a.Region == b.Region and a.RegionRoot == b.RegionRoot
+        and ((a.Bounds == nil and b.Bounds == nil) or (a.Bounds ~= nil and b.Bounds ~= nil
+            and a.Bounds.Frame == b.Bounds.Frame and a.Bounds.Size == b.Bounds.Size))
 end
 
 function Population:Step(now, players)
