@@ -48,9 +48,11 @@ function World:Remove(record, reason)
     if self.Records[record.Id] ~= record then return false end
     self.Records[record.Id], self.ByPart[record.Part] = nil, nil
     record.Alive = false
+    record.RemovalReason = reason or "Removed"
+    record.RemovedAt = if self.Options.Clock then self.Options.Clock() else self.Time
     record.Removing:Disconnect()
     record.Part:Destroy()
-    if self.Options.Removed then self.Options.Removed(record, reason or "Removed") end
+    if self.Options.Removed then self.Options.Removed(record, record.RemovalReason) end
     return true
 end
 
